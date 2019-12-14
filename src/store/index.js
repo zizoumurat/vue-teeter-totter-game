@@ -58,7 +58,7 @@ export default new Vuex.Store({
             if (leftSum == rightSum) return 0;
             state.pain = leftSum > rightSum ? (leftSum - rightSum) * -1 : (rightSum - leftSum)
             if (Math.abs(state.pain) > 60)
-                state.pain = 60 * (Math.abs(state.pain) / state.pain);
+                state.pain = 30 * (Math.abs(state.pain) / state.pain);
             return state.pain;
 
         },

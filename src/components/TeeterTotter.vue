@@ -1,6 +1,6 @@
 <template>
   <div class="teeter-box">
-    <div class="tetter" >
+    <div class="tetter" :style="{'transform':'rotate('+this.pain+'deg)'}">
       <shape
         v-for="(item,index) in leftShapes"
         :key="'leftShape-'+index"
@@ -9,7 +9,6 @@
       />
       <shape v-for="(item,index) in rightShapes" :key="'rightShape-'+index" :object="item" />
     </div>
-    <div class="floor" :style="{'transform':'rotate('+this.pain+'deg)'}"></div>
   </div>
 </template>
 
@@ -36,15 +35,16 @@ export default {
   right: 0%;
 }
 .tetter {
+  border-bottom: 10px solid #cc4125;
   height: 100%;
+  transition: transform 0.2s ease-in-out;
 }
-.floor {
-  width: 100%;
+.floor{
+  width:100%;
   height: 10px;
   background-color: #cc4125;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  transition: transform 0.2s ease-in-out;
+  position:absolute;
+  bottom:0;
+  left:0;
 }
 </style>
