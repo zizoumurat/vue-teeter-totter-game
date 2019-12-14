@@ -1,5 +1,5 @@
 <template>
-  <header>Press to backspace for start/stop game</header>
+  <header>Press to space for start/stop game</header>
 </template>
 
 <script>

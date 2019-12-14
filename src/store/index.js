@@ -24,7 +24,8 @@ export default new Vuex.Store({
         isPaused: true,
         leftShapes: [],
         rightShapes: [],
-        pain: 0
+        pain: 0,
+        maxWidth: 0,
     },
     mutations: {
         PauseToggle(state) {

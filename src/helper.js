@@ -5,8 +5,7 @@ export function newShape(startPoint, endPoint, bottom, isLeftItem) {
     const width = weight * 10;
     const left = Math.floor(Math.random() * (endPoint - startPoint)) + startPoint;
     var height = width;
-    if (type == 1)
-        height = width * 10;
+
     return {
         class: arrClass[type],
         type,
