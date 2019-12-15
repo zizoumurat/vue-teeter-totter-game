@@ -1,15 +1,13 @@
 <template>
   <div class="teeter-box">
     <div class="tetter">
-      <shape
-        v-for="(item,index) in leftShapes"
-        :key="'leftShape-'+index"
-        :object="item"
-        :isPaused="isPaused"
-      />
-      <shape v-for="(item,index) in rightShapes" :key="'rightShape-'+index" :object="item" />
-      <div class="floor" :style="{'transform':'rotate('+this.pain/2+'deg)'}">
-
+     
+      <shape v-for="(item) in activeShapes" :key="item.id" :object="item" :isPaused="isPaused" />
+  
+  
+      <div class="floor" :style="{'transform':'rotate('+this.pain+'deg)','transition': 'transform ' +Math.abs(pain)*0.1+'s ease-in-out'}">
+        <shape v-for="(item,index) in leftShapes" :key="'leftShape-'+index" :object="item" />
+        <shape v-for="(item,index) in rightShapes" :key="'rightShape-'+index" :object="item" />
       </div>
     </div>
   </div>
@@ -22,8 +20,18 @@ export default {
   components: {
     Shape
   },
+  methods: {},
   computed: {
-    ...mapState(["leftShapes", "rightShapes", "isPaused", "pain"])
+    ...mapState([
+      "leftShapes",
+      "rightShapes",
+      "activeShapes",
+      "isPaused",
+      "pain"
+    ]),
+    getId() {
+      return newDate().getDate();
+    }
   },
   created() {}
 };
@@ -39,14 +47,15 @@ export default {
 }
 .tetter {
   height: 100%;
-  transition: transform 0.2s ease-in-out;
 }
-.floor{
-  width:100%;
+.floor {
+  width: 1000px;
   height: 10px;
   background-color: #cc4125;
-  position:absolute;
-  bottom:0;
-  left:0;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  transition: transform 0.4s ease-in-out;
+
 }
 </style>

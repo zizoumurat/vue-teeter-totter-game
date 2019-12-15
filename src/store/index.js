@@ -3,70 +3,98 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
-function getMomentum(array, sumCount) {
+function getMomentum(array, maxWidth) {
     var sumMomentum = 0;
-    var yapilan = 0;
-    array.forEach((element, index) => {
-        if (index < sumCount) {
-            if (element.isLeftItem)
-                sumMomentum += element.weight * (50 - element.left);
-            else
-                sumMomentum += element.weight * (element.left - 50);
-            yapilan++;
-        }
+    array.forEach((element) => {
+        if (element.isLeftItem)
+            sumMomentum += (element.weight * ((Math.floor(maxWidth / 2) - element.left))) / 100;
+        else
+            sumMomentum += (element.weight * (element.left - Math.floor(maxWidth / 2))) / 100;
     });
-    console.log(array, sumMomentum, yapilan);
     return sumMomentum;
 }
 import { newShape } from '../helper'
 export default new Vuex.Store({
     state: {
+        bottom: 80,
         isPaused: true,
         leftShapes: [],
         rightShapes: [],
+        activeShapes: [],
         pain: 0,
-        maxWidth: 0,
+        maxWidth: 1000,
     },
     mutations: {
+        resetAll(state) {
+            state.bottom = 80;
+            state.isPaused = true;
+            state.leftShapes = [];
+            state.rightShapes = [];
+            state.activeShapes = [];
+            state.pain = 0;
+        },
         PauseToggle(state) {
             state.isPaused = !state.isPaused
         },
         addShapeToRight(state) {
-            const addShape = newShape(50, 100, 0, false);
+            const addShape = newShape(0, false, state.maxWidth);
             state.rightShapes.push(addShape);
         },
-        addShapeToLeft(state) {
-            var addShape = newShape(0, 50, 80, true);
-            state.leftShapes.push(addShape);
+        bottomAzalt(state) {
+            while (state.bottom > 0)
+                state.bottom--;
+        },
+        activeShapeMoveToLeft(state) {
+            if (state.activeShapes.length > 0) {
+                var addLeftShape = state.activeShapes.pop();
+                addLeftShape.isNewItem = false;
+                state.leftShapes.push(addLeftShape);
+            }
+        },
+        addShapeToActive(state, getters) {
+            state.activeShapes = [];
+            var activeShape = newShape(80, true, state.maxWidth);
+            state.activeShapes.push(activeShape);
         }
     },
     actions: {
         startNewGame({ commit }) {
+            commit("resetAll");
             commit("addShapeToRight");
-            commit("addShapeToLeft");
+            commit("addShapeToActive");
+        },
+        addShapeToRight({ commit }) {
+            commit("addShapeToRight");
+        },
+        activeShapeMoveToLeft({ commit }) {
+            commit("activeShapeMoveToLeft");
+        },
+        addShapeToActive({ commit }) {
+            commit("addShapeToActive");
         }
+
     },
     modules: {},
     getters: {
+        getBottom(state) {
+            return state.bottom;
+        },
         leftSum(state) {
-            return getMomentum(state.leftShapes, state.leftShapes.length)
+            return getMomentum(state.leftShapes, state.maxWidth)
         },
         rightSum(state) {
-            return getMomentum(state.rightShapes, state.leftShapes.length)
+            return getMomentum(state.rightShapes, state.maxWidth)
         },
         pain(state, getters) {
             const { leftSum, rightSum } = getters;
-            if (leftSum == rightSum) return 0;
-            state.pain = leftSum > rightSum ? (leftSum - rightSum) * -1 : (rightSum - leftSum)
-            if (Math.abs(state.pain) > 60)
+            state.pain = (leftSum - rightSum) * -180 / 100;
+            console.log(state.pain)
+            if (Math.abs(state.pain) > 30)
                 state.pain = 30 * (Math.abs(state.pain) / state.pain);
             return state.pain;
-
         },
-        gameOverStatus(state, getters) {
-            const { leftSum, rightSum, pain } = getters;
-            console.log(pain)
-            return Math.abs(state.pain) == 30
+        gameOverStatus(state) {
+            return state.leftShapes.length == state.rightShapes.length && Math.abs(state.pain) == 30
         }
     }
 })

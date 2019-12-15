@@ -18,7 +18,7 @@ export default {
 
 <style>
 .game-box {
-  width: 95%;
+  width: 1000px;
   margin: 0 auto;
   height: 100%;
   position: relative;
